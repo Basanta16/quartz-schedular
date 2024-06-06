@@ -17,26 +17,29 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @Slf4j
-@RestController("schedular")
+@RestController
+@RequestMapping("schedular")
 public class EmailSchedularController {
 
   @Autowired
   private Scheduler scheduler;
 
-  @PostMapping("/schedule/email")
+  @PostMapping(value = "/email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<EmailResponsePojo> scheduleEmail (@RequestBody EmailRequestPojo emailRequestPojo) {
-
     try {
       ZonedDateTime zonedDateTime = ZonedDateTime.of(emailRequestPojo.getDateTime(), emailRequestPojo.getTimeZone());
       if(zonedDateTime.isBefore(ZonedDateTime.now())){
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(new EmailResponsePojo(false, "Date Time should be after Curent time"));
       }
 
@@ -75,5 +78,10 @@ public class EmailSchedularController {
       .startAt(Date.from(zonedDateTime.toInstant()))
       .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
       .build();
+  }
+
+  @GetMapping
+  public ResponseEntity<String> getApiTest() {
+    return ResponseEntity.ok("Get API TEST");
   }
 }
