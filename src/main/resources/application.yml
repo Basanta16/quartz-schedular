@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url:
+    username:
+    password:
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            threadPool:
+              threadCount: 5
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: breppatoivebi-5158@yopmail.com
+    password:
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+
